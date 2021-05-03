@@ -1,1 +1,3 @@
 ckpt/
+predicts/
+*__pycache__*

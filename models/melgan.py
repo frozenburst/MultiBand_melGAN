@@ -17,7 +17,8 @@
 import numpy as np
 import tensorflow as tf
 
-from tensorflow_tts.utils import GroupConv1D, WeightNormalization
+from utils.group_conv import GroupConv1D
+from utils.weight_norm import WeightNormalization
 
 
 def get_initializer(initializer_seed=42):

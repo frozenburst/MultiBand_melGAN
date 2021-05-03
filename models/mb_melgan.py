@@ -21,7 +21,7 @@ import numpy as np
 import tensorflow as tf
 from scipy.signal import kaiser
 
-from tensorflow_tts.models import TFMelGANGenerator
+from models.melgan import TFMelGANGenerator
 
 
 def design_prototype_filter(taps=62, cutoff_ratio=0.15, beta=9.0):
