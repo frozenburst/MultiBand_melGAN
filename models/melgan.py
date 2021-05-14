@@ -17,8 +17,8 @@
 import numpy as np
 import tensorflow as tf
 
-from utils.group_conv import GroupConv1D
-from utils.weight_norm import WeightNormalization
+from libs.mb_melgan.utils.group_conv import GroupConv1D
+from libs.mb_melgan.utils.weight_norm import WeightNormalization
 
 
 def get_initializer(initializer_seed=42):

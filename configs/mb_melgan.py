@@ -14,7 +14,7 @@
 # limitations under the License.
 """Multi-band MelGAN Config object."""
 
-from configs.melgan import MelGANDiscriminatorConfig, MelGANGeneratorConfig
+from libs.mb_melgan.configs.melgan import MelGANDiscriminatorConfig, MelGANGeneratorConfig
 
 
 class MultiBandMelGANGeneratorConfig(MelGANGeneratorConfig):

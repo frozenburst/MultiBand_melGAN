@@ -20,8 +20,8 @@ import os
 import numpy as np
 import tensorflow as tf
 
-from datasets.abstract_dataset import AbstractDataset
-from utils.utils import find_files
+from libs.mb_melgan.datasets.abstract_dataset import AbstractDataset
+from libs.mb_melgan.utils.utils import find_files
 
 
 class MelDataset(AbstractDataset):
