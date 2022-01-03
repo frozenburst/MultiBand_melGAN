@@ -27,7 +27,7 @@ class hp:
     # data_dir = '/work/r08922a13/datasets/maestro-v3.0.0/sr41k/test/preprocess'
     # The directory of test files (spectrogram).
     # test_dir = f'/work/r08922a13/audio_inpainting/test_logs/{data_file}_spadeNet_bs1_NoWeighted_vocol_m100/output'
-    test_dir = '/work/r08922a13/similarity/results/maestro/maestro_10/preprocess/seg'
+    test_dir = '/work/r08922a13/similarity/results/maestro/maestro_10/preprocess/'
     wave_dir = op.join(test_dir, 'wave')
     wav_ext = '.wav'
     npy_ext = '.npy'
@@ -38,9 +38,6 @@ class hp:
     hop_size = 256
     image_width = 256
     length_5sec = int((sr / hop_size) * 5)
-    seg_middle = round(length_5sec * 0.2 * 3.5)        # esc50: 0, others: 2.75
-    seg_start = seg_middle - (image_width // 2)
-    # seg_start = 0
     isMag = True
 
 
@@ -50,21 +47,8 @@ if __name__ == "__main__":
     if op.isdir(hp.wave_dir) is False:
         os.mkdir(hp.wave_dir)
 
-    if hp.data_file == 'esc50':
-        hp.data_dir = '/work/r08922a13/datasets/ESC-50-master/split/test/tf_preprocess'
-        hp.sr = 44100
-        hp.seg_start = 0
-    elif hp.data_file == 'maestro':
-        hp.data_dir = '/work/r08922a13/datasets/maestro-v3.0.0/sr41k/test/preprocess'
-    elif hp.data_file == 'ljs':
-        hp.data_dir = '/work/r08922a13/datasets/LJSpeech-1.1/test/preprocess'
-        hp.sr = 22050
-        hp.length_5sec = int((hp.sr / hp.hop_size) * 5)
-        hp.seg_middle = round(hp.length_5sec * 0.2 * 3.5)
-        hp.seg_start = hp.seg_middle - (hp.image_width // 2)
-
     # test_filenames = glob.glob(f'{hp.test_dir}/*.npy')
-    test_filenames = glob.glob(f'{hp.test_dir}/*rec_seg.npy')
+    test_filenames = glob.glob(f'{hp.test_dir}/*rec-mag-raw-feats.npy')
     num_test_filenames = len(test_filenames)
     print(f'Number of test files is {num_test_filenames}.')
 
@@ -81,23 +65,13 @@ if __name__ == "__main__":
 
     for test_file in tqdm(test_filenames):
         test_data = np.load(test_file)
+        if test_data.shape[1] > hp.length_5sec:
+            test_data = test_data[:, :hp.length_5sec]
         if len(test_data.shape) == 2:
-            test_data = test_data[:, :, np.newaxis]
-        basename = op.basename(test_file).split('_3_4_rec_seg.')[0]
+            test_data = test_data[np.newaxis, :, :, np.newaxis]
+        basename = op.basename(test_file).split('_3_4_rec')[0]
 
-        ori_filename = basename + hp.mag_suffix + hp.npy_ext
-        ori_filename = op.join(hp.data_dir, ori_filename)
-        complete_data = np.load(ori_filename)
-        if len(complete_data.shape) == 2:
-            complete_data = complete_data[np.newaxis, :, :, np.newaxis]
-        elif len(complete_data.shape) == 3:
-            complete_data = complete_data[np.newaxis, :, :]
-        else:
-            raise ValueError("Unexpected shape of test file:", complete_data.shape)
-        if complete_data.shape[2] > hp.length_5sec:
-            complete_data = complete_data[:, :, :hp.length_5sec, :]
-        complete_data[0, :, hp.seg_start:hp.seg_start+hp.image_width, :] = test_data
-        mel = mag_to_mel(complete_data, hp.sr)
+        mel = mag_to_mel(test_data, hp.sr)
         subbands = mb_melgan(mel, training=False)
         audios = pqmf.synthesis(subbands)
 
