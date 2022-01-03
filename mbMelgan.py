@@ -8,11 +8,9 @@ import glob
 import os.path as op
 import os
 import numpy as np
-import soundfile as sf
 import yaml
 
 from libs.mb_melgan.configs.mb_melgan import MultiBandMelGANGeneratorConfig
-from libs.mb_melgan.datasets.mel_dataset import MelDataset
 from libs.mb_melgan.models.mb_melgan import TFPQMF, TFMelGANGenerator
 from utils import mag_to_mel
 
@@ -22,12 +20,8 @@ print(tf.__version__)
 class hp:
     # Training setting
     data_file = 'maestro'   # esc50, maestro, ljs
-    # data_dir = '/work/r08922a13/datasets/ESC-50-master/split/test/tf_preprocess'
-    # data_dir = '/work/r08922a13/datasets/LJSpeech-1.1/test/preprocess'
-    # data_dir = '/work/r08922a13/datasets/maestro-v3.0.0/sr41k/test/preprocess'
     # The directory of test files (spectrogram).
-    # test_dir = f'/work/r08922a13/audio_inpainting/test_logs/{data_file}_spadeNet_bs1_NoWeighted_vocol_m100/output'
-    test_dir = '/work/r08922a13/similarity/results/maestro/maestro_10/preprocess/seg'
+    test_dir = '/path/to/your/spectrogram'
     wave_dir = op.join(test_dir, 'wave')
     wav_ext = '.wav'
     npy_ext = '.npy'
@@ -49,21 +43,20 @@ if __name__ == "__main__":
     # make output dir
     if op.isdir(hp.wave_dir) is False:
         os.mkdir(hp.wave_dir)
-
+    '''
     if hp.data_file == 'esc50':
-        hp.data_dir = '/work/r08922a13/datasets/ESC-50-master/split/test/tf_preprocess'
+        hp.data_dir = '/path/to/your/ESC-50-master/split/test/tf_preprocess'
         hp.sr = 44100
         hp.seg_start = 0
     elif hp.data_file == 'maestro':
-        hp.data_dir = '/work/r08922a13/datasets/maestro-v3.0.0/sr41k/test/preprocess'
+        hp.data_dir = '/path/to/your/datasets/maestro-v3.0.0/sr41k/test/preprocess'
     elif hp.data_file == 'ljs':
-        hp.data_dir = '/work/r08922a13/datasets/LJSpeech-1.1/test/preprocess'
+        hp.data_dir = '/path/to/your/datasets/LJSpeech-1.1/test/preprocess'
         hp.sr = 22050
         hp.length_5sec = int((hp.sr / hp.hop_size) * 5)
         hp.seg_middle = round(hp.length_5sec * 0.2 * 3.5)
         hp.seg_start = hp.seg_middle - (hp.image_width // 2)
-
-    # test_filenames = glob.glob(f'{hp.test_dir}/*.npy')
+    '''
     test_filenames = glob.glob(f'{hp.test_dir}/*rec_seg.npy')
     num_test_filenames = len(test_filenames)
     print(f'Number of test files is {num_test_filenames}.')

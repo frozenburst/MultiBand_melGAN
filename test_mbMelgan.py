@@ -1,8 +1,6 @@
 import sys
 sys.path.append(".")
 
-from tqdm import tqdm
-
 import tensorflow as tf
 import os.path as op
 import os
@@ -11,11 +9,11 @@ import soundfile as sf
 import yaml
 
 from libs.mb_melgan.configs.mb_melgan import MultiBandMelGANGeneratorConfig
-from libs.mb_melgan.datasets.mel_dataset import MelDataset
 from libs.mb_melgan.models.mb_melgan import TFPQMF, TFMelGANGenerator
 from utils import mag_to_mel
 
 print(tf.__version__)
+
 
 class hp:
     # Training setting
@@ -31,7 +29,7 @@ class hp:
 if __name__ == "__main__":
 
     filename = 'LJ007-0173-mag-raw-feats.npy'
-    root = '/work/r08922a13/datasets/LJSpeech-1.1/test/preprocess'
+    root = '/path/to/your/testing/datasets/LJSpeech-1.1/test/preprocess'
     file_pth = op.join(root, filename)
     test_data = np.load(file_pth)
     print(test_data.shape)
@@ -50,7 +48,6 @@ if __name__ == "__main__":
 
     # trim with custom
     # test_data = test_data[:, 100:100+hp.length_5sec, :]
-
 
     if not op.exists(hp.output_pth):
         os.mkdir(hp.output_pth)
